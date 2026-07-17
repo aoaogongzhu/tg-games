@@ -1,23 +1,19 @@
-﻿// 🎡 命运转盘 - Spin the wheel (Mini App based)
+﻿// 🎡 命运转盘 - Wheel of Fate (Bilingual Segments)
+const i18n = require('../utils/i18n');
+
 module.exports = {
-  id: 'wheel',
-  name: '🎡 命运转盘',
+  id: 'wheel', name: '🎡 命运转盘',
 
   async startPlay(ctx) {
-    return ctx.reply(
-      '🎡 *命运转盘*\n\n点击下方按钮打开转盘，转动你的命运！',
-      {
-        parse_mode: 'Markdown',
-        reply_markup: {
-          inline_keyboard: [[
-            { text: '🎡 打开转盘', web_app: { url: `${process.env.APP_URL}/wheel.html` } }
-          ]]
-        }
+    const lang = i18n.detectLang(ctx);
+    return ctx.reply(`${i18n.t(lang,'wheel.title')}\n\n${i18n.t(lang,'common.social_tag')}`, {
+      reply_markup: {
+        inline_keyboard: [[{ text: i18n.t(lang,'wheel.spin'), web_app: {
+          url: `${process.env.APP_URL}/wheel.html?lang=${lang}`
+        }}]]
       }
-    );
+    });
   },
 
-  async handleCallback(ctx, action) {
-    return ctx.answerCbQuery('请在 Mini App 中打开转盘');
-  }
+  async handleCallback(ctx) { return ctx.answerCbQuery('🎡'); }
 };
