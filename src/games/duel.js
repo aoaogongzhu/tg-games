@@ -1,4 +1,4 @@
-// ?? ������ - Duel Arena (Bilingual)
+// ?? ������ - Duel Arena (Bilingual)
 const { v4: uuidv4 } = require('uuid');
 const i18n = require('../utils/i18n');
 
@@ -16,13 +16,13 @@ function detectLangFromIds(...ids) {
 }
 
 module.exports = {
-  id: 'duel', name: '?? ������',
+  id: 'duel', name: '?? ������',
 
   async startPlay(ctx) {
     const lang = i18n.detectLang(ctx);
     if (ctx.chat.id > 0) {
       return ctx.reply(`${i18n.t(lang, 'duel.name')}\n\n${i18n.t(lang, 'common.social_tag')}`, {
-        reply_markup: { inline_keyboard: [[{ text: '?? ' + i18n.t(lang, 'common.retry').replace('����һ��','Challenge'), callback_data: 'game_duel_challenge' }]] }
+        reply_markup: { inline_keyboard: [[{ text: '?? ' + i18n.t(lang, 'common.retry').replace('����һ��','Challenge'), callback_data: 'game_duel_challenge' }]] }
       });
     }
     return ctx.reply(`${i18n.t(lang, 'duel.name')}\n\n${i18n.t(lang, 'common.social_tag')}`, {
@@ -34,6 +34,35 @@ module.exports = {
     const userId = ctx.from.id;
     const username = ctx.from.username || ctx.from.first_name || 'Player';
     const lang = i18n.getUserLang(userId) || i18n.detectLang(ctx);
+
+    if (action.startsWith('challenge_')) {
+      const challengeId = action.slice(10);
+      const challenge = challenges.get(challengeId);
+      if (!challenge) return ctx.answerCbQuery('❌', { show_alert: true });
+      if (userId === challenge.challenger.id) return ctx.answerCbQuery('不能和自己决斗', { show_alert: true });
+      challenges.delete(challengeId);
+      const gameId = uuidv4().slice(0, 8);
+      const game = {
+        id: gameId, chatId: ctx.chat.id, lang: challenge.challenger.lang || lang, turn: 1, status: 'playing', winner: null, log: [],
+        players: {
+          [challenge.challenger.id]: { id: challenge.challenger.id, username: challenge.challenger.username, hp: 8, action: null, lang: challenge.challenger.lang },
+          [userId]: { id: userId, username, hp: 8, action: null, lang: lang }
+        },
+        order: [challenge.challenger.id, userId]
+      };
+      games.set(gameId, game);
+      const url = process.env.APP_URL + '/duel.html?gameId=' + gameId + '&p1=' + challenge.challenger.id + '&p2=' + userId + '&lang=' + lang;
+      try { await ctx.editMessageText((lang === 'zh' ? '⚔️ 决斗开始！' : '⚔️ Duel started!') + ' ' + challenge.challenger.username + ' VS ' + username, { parse_mode: 'Markdown' }); } catch(e) {}
+      for (const pid of [challenge.challenger.id, userId]) {
+        try {
+          const pl = pid === challenge.challenger.id ? (challenge.challenger.lang || lang) : lang;
+          await ctx.telegram.sendMessage(pid, lang === 'zh' ? '你的决斗已开始！点击进入战场：' : 'Your duel has started! Click to enter:', {
+            reply_markup: { inline_keyboard: [[{ text: '⚔️ ' + (lang === 'zh' ? '进入战场' : 'Enter Battle'), web_app: { url: url + '&lang=' + pl } }]] }
+          });
+        } catch(e) {}
+      }
+      return ctx.answerCbQuery('✅');
+    }
 
     if (action === 'challenge') {
       const challengeId = uuidv4().slice(0, 6);
@@ -62,7 +91,7 @@ module.exports = {
       const gameId = uuidv4().slice(0, 8);
       const oppLang = i18n.getUserLang(userId) || i18n.detectLang(ctx);
       const game = {
-        id: gameId, chatId: challenge.chatId, lang, turn: 1, status: 'playing', winner: null, log: [],
+        id: gameId, chatId: ctx.chat.id, lang, turn: 1, status: 'playing', winner: null, log: [],
         players: {
           [challenge.challenger.id]: { id: challenge.challenger.id, username: challenge.challenger.username, hp: MAX_HP, action: null, lang: challenge.challenger.lang },
           [userId]: { id: userId, username, hp: MAX_HP, action: null, lang: oppLang }

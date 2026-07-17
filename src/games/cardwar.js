@@ -33,7 +33,30 @@ module.exports = {
       games.delete(id);
       return ctx.answerCbQuery('🎴');
     }
-    if(sub==='cancel'){games.delete(id);await ctx.editMessageText('❌');return ctx.answerCbQuery('❌');}
+    if(s==='accept2'){
+    const cg=games.get(id);
+    if(!cg||!cg.isOpen)return ctx.answerCbQuery('❌');
+    if(ctx.from.id===cg.challenger.id)return ctx.answerCbQuery('❌');
+    const ngid=v4().slice(0,6);
+    games.set(ngid,{...cg,id:ngid,chatId:ctx.chat.id,players:[cg.challenger,{id:ctx.from.id,username:ctx.from.username||'Player'}],status:'playing'});
+    games.delete(id);
+    const gg=games.get(ngid);
+    if(!gg)return ctx.answerCbQuery('❌');
+    const cards=['\uD83C\uDCA2','\uD83C\uDCA3','\uD83C\uDCA4','\uD83C\uDCA5','\uD83C\uDCA6','\uD83C\uDCA7','\uD83C\uDCA8','\uD83C\uDCA9','\uD83C\uDCAA','\uD83C\uDCAB','\uD83C\uDCAD','\uD83C\uDCAE','\uD83C\uDCA1'];
+    const vals=[2,3,4,5,6,7,8,9,10,11,12,13,14];
+    const cc1=cards[Math.floor(Math.random()*13)],cc2=cards[Math.floor(Math.random()*13)];
+    const v1=vals[cards.indexOf(cc1)],v2=vals[cards.indexOf(cc2)];
+    const r=require('./utils/result');
+    let msg;
+    if(v1>v2)msg=r.win(gg.lang,{winner:gg.players[0].username+' 🂴',game:'🂴 '+(gg.lang==='zh'?'抽牌对决':'Card War'),stats:{[gg.players[0].username]:cc1+'('+v1+')',[gg.players[1].username]:cc2+'('+v2+')'}});
+    else if(v2>v1)msg=r.win(gg.lang,{winner:gg.players[1].username+' 🂴',game:'🂴 '+(gg.lang==='zh'?'抽牌对决':'Card War'),stats:{[gg.players[0].username]:cc1+'('+v1+')',[gg.players[1].username]:cc2+'('+v2+')'}});
+    else msg=r.draw(gg.lang,{players:[gg.players[0].username,gg.players[1].username]});
+    await ctx.editMessageText(msg,{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'🂴 '+(gg.lang==='zh'?'再战一局':'Rematch'),callback_data:'game_cardwar_new'}]]}});
+    games.delete(ngid);
+    return ctx.answerCbQuery('🂴');
+  }
+
+  if(sub==='cancel'){games.delete(id);await ctx.editMessageText('❌');return ctx.answerCbQuery('❌');}
     if(action==='new')return this.startPlay(ctx);
     ctx.answerCbQuery();
   }

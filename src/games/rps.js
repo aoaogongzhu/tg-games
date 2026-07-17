@@ -36,6 +36,31 @@ module.exports = {
       });
     }
 
+    if (action.startsWith('challenge_')) {
+      const chId = action.slice(10);
+      const ch = games.get(chId);
+      if (!ch || !ch.isOpen) return ctx.answerCbQuery('❌', { show_alert: true });
+      if (userId === ch.challenger.id) return ctx.answerCbQuery('不能和自己玩', { show_alert: true });
+      const oppLang = i18n.getUserLang(userId) || i18n.detectLang(ctx);
+      ch.opponent = { id: userId, username, lang: oppLang };
+      ch.state = {}; ch.scores = {}; ch.round = 1; ch.status = 'playing';
+      ch.state[ch.challenger.id] = null; ch.state[userId] = null;
+      ch.scores[ch.challenger.id] = 0; ch.scores[userId] = 0;
+      ch.chatId = ctx.chat.id;
+      await ctx.editMessageText('🪨 ' + ch.challenger.username + ' VS ' + username);
+      for (const p of [ch.challenger, ch.opponent]) {
+        const pLang = p.lang || lang;
+        try { await ctx.telegram.sendMessage(p.id, '出拳！', {
+          reply_markup: { inline_keyboard: [[
+            { text: '🪨 石头', callback_data: 'game_rps_move_' + ch.id + '_' + p.id + '_rock' },
+            { text: '📄 布', callback_data: 'game_rps_move_' + ch.id + '_' + p.id + '_paper' },
+            { text: '✂️ 剪刀', callback_data: 'game_rps_move_' + ch.id + '_' + p.id + '_scissors' }
+          ]]}
+        }); } catch(e) {}
+      }
+      return ctx.answerCbQuery('✅');
+    }
+
     if (action.startsWith('accept_')) {
       const gameId = action.slice(7);
       const game = games.get(gameId);

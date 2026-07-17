@@ -47,7 +47,25 @@ module.exports = {
       games.delete(id);
       return ctx.answerCbQuery('🤠');
     }
-    if(sub==='cancel'){games.delete(id);await ctx.editMessageText('❌');return ctx.answerCbQuery('❌');}
+    if(s==='accept2'){
+    const cg=games.get(id);
+    if(!cg||!cg.isOpen)return ctx.answerCbQuery('❌');
+    if(ctx.from.id===cg.challenger.id)return ctx.answerCbQuery('❌');
+    const ngid=v4().slice(0,6);
+    games.set(ngid,{...cg,id:ngid,chatId:ctx.chat.id,players:[cg.challenger,{id:ctx.from.id,username:ctx.from.username||'Player'}],status:'playing'});
+    games.delete(id);
+    const gg=games.get(ngid);
+    if(!gg)return ctx.answerCbQuery('❌');
+    await ctx.editMessageText(gg.lang==='zh'?'🔫 *对决开始！*\n\n⏳ 3...':'🔫 *Duel!*\n\n⏳ 3...',{parse_mode:'Markdown'});
+    setTimeout(async()=>{try{if(!games.has(ngid))return;await ctx.editMessageText('⏳ 2...');}catch(e){}},1000);
+    setTimeout(async()=>{try{if(!games.has(ngid))return;await ctx.editMessageText('⏳ 1...');}catch(e){}},2000);
+    setTimeout(async()=>{try{if(!games.has(ngid))return;await ctx.editMessageText(gg.lang==='zh'?'🔫 *开枪！* 先按下按钮的人获胜！':'🔫 *FIRE!* First to press wins!',{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'🔫 '+(gg.lang==='zh'?'开枪！':'FIRE!'),callback_data:`game_western_fire_${ngid}`}]]}});
+      gg.fireTime=Date.now()+2000;}catch(e){}},3000);
+    setTimeout(async()=>{try{if(!games.has(ngid)||gg.winner)return;await ctx.editMessageText(gg.lang==='zh'?'⏰ 时间到！平局！':'⏰ Time up! Draw!',{reply_markup:{inline_keyboard:[[{text:'🔫 '+(gg.lang==='zh'?'再来一局':'Rematch'),callback_data:'game_western_new'}]]}});games.delete(ngid);}catch(e){}},5000);
+    return ctx.answerCbQuery('🔫');
+  }
+
+  if(sub==='cancel'){games.delete(id);await ctx.editMessageText('❌');return ctx.answerCbQuery('❌');}
     if(action==='new')return this.startPlay(ctx);
     ctx.answerCbQuery();
   }
