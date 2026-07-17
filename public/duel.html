@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>⚔️ 决斗场</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f0f1a;color:#eee;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px}
+.panel{width:100%;max-width:360px;background:#1a1a30;border-radius:10px;padding:12px 14px;margin-bottom:6px}
+.panel-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:14px}
+.panel-hp{font-weight:700;font-size:18px;color:#2ecc71}
+.hp-bg{width:100%;height:8px;background:#2a2a4a;border-radius:4px;overflow:hidden}
+.hp-fill{height:100%;border-radius:4px;transition:width .4s}
+.hp-fill.high{background:#2ecc71}.hp-fill.med{background:#f1c40f}.hp-fill.low{background:#e74c3c}
+.vs{font-size:20px;font-weight:800;color:#e94560;margin:2px 0;text-align:center}
+.actions{width:100%;max-width:360px;display:flex;gap:6px;margin:8px 0}
+.actions button{flex:1;padding:12px 4px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;color:#fff}
+.actions button:active{transform:scale(.93)}
+.btn-atk{background:#c0392b}.btn-atk.selected{background:#e74c3c;box-shadow:0 0 0 2px #fff}
+.btn-def{background:#2980b9}.btn-def.selected{background:#3498db;box-shadow:0 0 0 2px #fff}
+.btn-heal{background:#27ae60}.btn-heal.selected{background:#2ecc71;box-shadow:0 0 0 2px #fff}
+.actions button:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.submit{width:100%;max-width:360px;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;background:#e94560;color:#fff;margin-bottom:8px;transition:opacity .15s}
+.submit:disabled{opacity:.35;cursor:not-allowed}
+.status{width:100%;max-width:360px;background:#1a1a30;border-radius:8px;padding:10px 14px;text-align:center;font-size:14px;min-height:40px;display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+.waiting{color:#f1c40f}.result{color:#2ecc71}
+.turn-info{text-align:center;color:#667;font-size:12px;margin:2px 0}
+.loading{text-align:center;padding:50px 0;color:#667}
+.spinner{display:inline-block;width:28px;height:28px;border:3px solid #1a1a30;border-top-color:#e94560;border-radius:50%;animation:spin .7s linear infinite;margin-bottom:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gameover{text-align:center;padding:16px}
+.gameover .trophy{font-size:42px}
+.gameover .title{font-size:22px;font-weight:700;margin:6px 0}
+
+/* Result Card */
+.result-card{width:100%;max-width:360px;background:linear-gradient(135deg,#1a1a30,#0f0f1a);border-radius:14px;padding:18px 16px;margin:6px 0;border:1px solid #333;position:relative;overflow:hidden}
+.result-card .r-header{text-align:center;margin-bottom:10px}
+.result-card .r-header .r-icon{font-size:36px}
+.result-card .r-header .r-title{font-size:20px;font-weight:800;margin-top:2px}
+.result-card .r-players{display:flex;justify-content:space-between;align-items:center;margin:10px 0}
+.result-card .r-player{text-align:center;flex:1}
+.result-card .r-player .r-name{font-size:14px;color:#889;margin-bottom:2px}
+.result-card .r-player .r-hp{font-size:24px;font-weight:700}
+.r-hp.win{color:#2ecc71}.r-hp.lose{color:#e74c3c}
+.result-card .r-vs{font-size:18px;color:#e94560;font-weight:800;padding:0 8px}
+.result-card .r-bar{margin:6px 0;display:flex;gap:0;height:6px;border-radius:3px;overflow:hidden}
+.result-card .r-bar .rb{height:100%}
+.result-card .r-bar .rb.w{background:#2ecc71}.result-card .r-bar .rb.l{background:#e74c3c}
+.result-card .r-stats{display:flex;justify-content:space-around;margin-top:8px;font-size:12px;color:#667}
+</style>
+</head>
+<body>
+<div id="root"><div class="loading"><div class="spinner"></div><div>加载决斗...</div></div></div>
+
+<script>
+const API = window.location.origin;
+const tg = window.Telegram?.WebApp;
+const params = new URLSearchParams(window.location.search);
+const GAME_ID = params.get('gameId');
+const MY_PID = params.get('p1') || params.get('p2');
+const P1 = params.get('p1'), P2 = params.get('p2');
+
+// Determine which player we are
+function getMyPid() {
+  if (MY_PID) return MY_PID;
+  // If tg user data available, use it
+  if (tg?.initDataUnsafe?.user?.id) return tg.initDataUnsafe.user.id;
+  return P1; // fallback
+}
+
+const PID = getMyPid();
+if (!GAME_ID || !PID) document.getElementById('root').innerHTML = '<div class="status result" style="color:#e74c3c">❌ 无效链接</div>';
+
+if (tg) { tg.expand(); tg.ready(); }
+
+let state, selAction=null, submitting=false, pollIntvl=null;
+
+function hpCls(hp){const p=hp/8;return p>.5?'high':p>.25?'med':'low'}
+
+function renderPanels(data){
+  const me=data.me, opp=data.opponent;
+  return `
+    <div class="panel">
+      <div class="panel-hdr"><span>👤 ${me.username}</span><span>HP <span class="panel-hp">${me.hp}</span>/8</span></div>
+      <div class="hp-bg"><div class="hp-fill ${hpCls(me.hp)}" style="width:${(me.hp/8)*100}%"></div></div>
+    </div>
+    <div class="vs">⚔️</div>
+    <div class="panel" style="opacity:.85">
+      <div class="panel-hdr"><span>👤 ${opp.username}</span><span>HP <span class="panel-hp">${opp.hp}</span>/8</span></div>
+      <div class="hp-bg"><div class="hp-fill ${hpCls(opp.hp)}" style="width:${(opp.hp/8)*100}%"></div></div>
+    </div>`;
+}
+
+function renderActions(){
+  return `<div class="actions">
+    <button class="btn-atk" data-a="attack" onclick="sel('attack')"><div style="font-size:20px">⚔️</div><div>攻击</div></button>
+    <button class="btn-def" data-a="defend" onclick="sel('defend')"><div style="font-size:20px">🛡️</div><div>防御</div></button>
+    <button class="btn-heal" data-a="heal" onclick="sel('heal')"><div style="font-size:20px">💚</div><div>治疗</div></button>
+  </div>
+  <button class="submit" id="sbtn" onclick="submit()" disabled>确认行动</button>`;
+}
+
+function sel(a){
+  if(submitting)return;
+  selAction=a;
+  document.querySelectorAll('.actions button').forEach(b=>b.classList.toggle('selected',b.dataset.a===a));
+  document.getElementById('sbtn').disabled=false;
+}
+
+async function submit(){
+  if(!selAction||submitting)return;
+  submitting=true;
+  document.getElementById('sbtn').disabled=true;
+  document.querySelectorAll('.actions button').forEach(b=>b.disabled=true);
+  try{
+    const r=await fetch(`${API}/api/duel/${GAME_ID}/action`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pid:PID,action:selAction})});
+    const d=await r.json();
+    if(d.error)throw new Error(d.error);
+    state=d.game;
+    showWaiting();
+    startPoll();
+  }catch(e){
+    document.getElementById('sbtn').disabled=false;
+    document.querySelectorAll('.actions button').forEach(b=>b.disabled=false);
+    submitting=false;
+  }
+}
+
+function showWaiting(){
+  document.getElementById('root').innerHTML=`
+    ${renderPanels(state)}
+    <div class="turn-info">第 ${state.turn} 回合</div>
+    <div class="status waiting"><div class="spinner" style="width:16px;height:16px;border-width:2px;margin-right:8px"></div>已选择，等待对手...</div>`;
+}
+
+function startPoll(){
+  if(pollIntvl)clearInterval(pollIntvl);
+  pollIntvl=setInterval(poll,1200);
+}
+
+async function poll(){
+  try{
+    const r=await fetch(`${API}/api/duel/${GAME_ID}/poll?pid=${PID}`);
+    const d=await r.json();
+    if(d.error)return;
+    if(d.log&&d.log.length>0){
+      clearInterval(pollIntvl);pollIntvl=null;
+      showResult(d);
+    }else if(d.status==='finished'){
+      clearInterval(pollIntvl);pollIntvl=null;
+      showResult(d);
+    }
+  }catch(e){}
+}
+
+function showResult(data){
+  submitting=false;selAction=null;
+  // Fetch full state
+  fetch(`${API}/api/duel/${GAME_ID}?pid=${PID}`).then(r=>r.json()).then(fg=>{
+    state=fg;
+    const ml=fg.me, ol=fg.opponent, lg=fg.log[fg.log.length-1];
+    const myWin=fg.winner==PID, draw=fg.winner==='draw';
+
+    if(fg.status==='finished'){
+      // Show result card
+      const icon=myWin?'🏆':draw?'🤯':'💀';
+      const title=myWin?'胜利！':draw?'平局！':'败北...';
+      const mhp=ml.hp, ohp=ol.hp;
+      const mCls=myWin?'win':'lose', oCls=myWin?'lose':'win';
+      const total=mhp+ohp||1;
+      document.getElementById('root').innerHTML=`
+        ${renderPanels(fg)}
+        <div class="result-card">
+          <div class="r-header"><div class="r-icon">${icon}</div><div class="r-title">${title}</div></div>
+          <div class="r-players">
+            <div class="r-player"><div class="r-name">👤 ${ml.username}</div><div class="r-hp ${mCls}">❤️ ${mhp}</div></div>
+            <div class="r-vs">VS</div>
+            <div class="r-player"><div class="r-name">👤 ${ol.username}</div><div class="r-hp ${oCls}">❤️ ${ohp}</div></div>
+          </div>
+          <div class="r-bar"><div class="rb w" style="width:${(mhp/total)*100}%"></div><div class="rb l" style="width:${(ohp/total)*100}%"></div></div>
+          <div class="r-stats"><span>共 ${fg.turn-1} 回合</span><span>${lg?.log||''}</span></div>
+        </div>
+        <div style="text-align:center;color:#667;font-size:11px;margin-top:4px">📸 截图分享给朋友</div>
+        <button class="submit" onclick="closeApp()" style="margin-top:8px">关闭</button>`;
+    }else{
+      const container=document.getElementById('root');
+      container.innerHTML=`
+        ${renderPanels(fg)}
+        <div class="turn-info">${lg?`第 ${fg.turn-1} 回合 · ${lg.log}`:`第 ${fg.turn} 回合`}</div>
+        ${lg?`<div class="status result">${lg.log}</div>`:''}
+        <div class="turn-info">第 ${fg.turn} 回合 · 选择行动</div>
+        ${renderActions()}`;
+    }
+  }).catch(()=>{
+    // fallback
+    document.getElementById('root').innerHTML=`<div class="status result">${data.winner==PID?'🏆 你赢了':data.winner==='draw'?'🤯 平局':'💀 你输了'}</div>`;
+  });
+}
+
+function closeApp(){tg?.close()||window.close()}
+
+// Init
+async function init(){
+  try{
+    const r=await fetch(`${API}/api/duel/${GAME_ID}?pid=${PID}`);
+    const d=await r.json();
+    if(!d||d.error)throw new Error(d.error||'Not found');
+    state=d;
+    if(d.status==='finished')return showResult(d);
+    if(d.me.action!==null){showWaiting();startPoll();return;}
+    document.getElementById('root').innerHTML=`
+      ${renderPanels(d)}
+      <div class="turn-info">第 ${d.turn} 回合 · 你的回合</div>
+      ${renderActions()}`;
+  }catch(e){
+    document.getElementById('root').innerHTML=`<div class="status" style="color:#e74c3c">❌ ${e.message}</div>`;
+  }
+}
+init();
+</script>
+</body>
+</html>

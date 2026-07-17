@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🎡 命运转盘</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f0f1a;color:#eee;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px;overflow:hidden}
+h1{font-size:22px;margin:8px 0 4px;text-align:center}
+.sub{color:#667;font-size:13px;margin-bottom:12px}
+.wheel-wrap{position:relative;width:280px;height:280px;margin:8px auto}
+canvas#wheel{width:280px;height:280px;border-radius:50%;box-shadow:0 0 30px rgba(233,69,96,.3)}
+.pointer{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:28px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));z-index:2}
+.btn-spin{width:260px;padding:16px;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#e94560,#c0392b);color:#fff;margin:14px 0 8px;transition:transform .15s}
+.btn-spin:active{transform:scale(.95)}
+.btn-spin:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.result-box{width:100%;max-width:360px;background:#1a1a30;border-radius:12px;padding:14px 16px;text-align:center;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.result-box .r-icon{font-size:36px;margin-bottom:4px}
+.result-box .r-text{font-size:18px;font-weight:600}
+.result-box .r-desc{font-size:13px;color:#889;margin-top:2px}
+.history{width:100%;max-width:360px;margin-top:10px;flex:1;overflow-y:auto;max-height:120px}
+.history .h-item{display:flex;justify-content:space-between;padding:4px 8px;font-size:13px;color:#667;border-bottom:1px solid #1a1a30}
+.history .h-item:last-child{border-bottom:none}
+.spinning{animation:pulse .6s ease-in-out infinite alternate}
+@keyframes pulse{from{opacity:1}to{opacity:.5}}
+</style>
+</head>
+<body>
+<h1>🎡 命运转盘</h1>
+<div class="sub">转一下，看看你的命运</div>
+
+<div class="wheel-wrap">
+  <div class="pointer">▼</div>
+  <canvas id="wheel" width="560" height="560"></canvas>
+</div>
+
+<button class="btn-spin" id="spinBtn" onclick="spin()">🎡 转动转盘</button>
+
+<div class="result-box" id="result">
+  <div class="r-icon" id="rIcon">🎯</div>
+  <div class="r-text" id="rText">点击转动试试！</div>
+  <div class="r-desc" id="rDesc">命运掌握在你手中</div>
+</div>
+
+<div class="history" id="history">
+  <div class="h-item"><span>—</span><span>历史记录</span></div>
+</div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if(tg){tg.expand();tg.ready()}
+
+const SEGMENTS = [
+  {label:'🎉 超级大奖',emoji:'🎉',color:'#e74c3c'},
+  {label:'💰 发点小财',emoji:'💰',color:'#f39c12'},
+  {label:'😅 再来一次',emoji:'😅',color:'#3498db'},
+  {label:'💔 小小惩罚',emoji:'💔',color:'#9b59b6'},
+  {label:'🎁 惊喜礼物',emoji:'🎁',color:'#2ecc71'},
+  {label:'😈 恶作剧',emoji:'😈',color:'#e67e22'},
+  {label:'💤 休息一下',emoji:'💤',color:'#1abc9c'},
+  {label:'🔥 好运连连',emoji:'🔥',color:'#e94560'},
+];
+
+const N = SEGMENTS.length;
+const canvas = document.getElementById('wheel');
+const ctx = canvas.getContext('2d');
+let rotation = 0, spinning = false, history = [];
+
+// Draw wheel
+function drawWheel(rot){
+  ctx.clearRect(0,0,560,560);
+  const cx=280,cy=280,r=260;
+  const seg = 2*Math.PI/N;
+  SEGMENTS.forEach((s,i)=>{
+    const a = rot + i*seg;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,a,a+seg);
+    ctx.closePath();
+    ctx.fillStyle = s.color;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.2)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // Text
+    const ta = a + seg/2;
+    const tr = r * 0.6;
+    ctx.save();
+    ctx.translate(cx+Math.cos(ta)*tr, cy+Math.sin(ta)*tr);
+    ctx.rotate(ta + Math.PI/2);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(s.emoji, 0, -6);
+    ctx.font = '14px sans-serif';
+    ctx.fillText(s.label.replace(/[^\u4e00-\u9fa5]/g,''), 0, 14);
+    ctx.restore();
+  });
+  // Center circle
+  ctx.beginPath();
+  ctx.arc(cx,cy,28,0,2*Math.PI);
+  ctx.fillStyle = '#1a1a30';
+  ctx.fill();
+  ctx.strokeStyle = '#e94560';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('🎡',cx,cy);
+}
+
+drawWheel(0);
+
+function spin(){
+  if(spinning)return;
+  spinning = true;
+  const btn = document.getElementById('spinBtn');
+  btn.disabled = true;
+  btn.textContent = '🎡 转动中...';
+  document.getElementById('result').innerHTML = '<div class="spinner" style="display:inline-block;width:24px;height:24px;border:3px solid #1a1a30;border-top-color:#e94560;border-radius:50%;animation:spin .7s linear infinite;margin:8px"></div>';
+
+  // Random target
+  const targetSeg = Math.floor(Math.random() * N);
+  const segAngle = (2*Math.PI)/N;
+  const targetAngle = targetSeg * segAngle + segAngle/2;
+  const fullSpins = 5 + Math.floor(Math.random()*3); // 5-7 full rotations
+  const totalRotation = fullSpins * 2 * Math.PI + (2*Math.PI - targetAngle);
+
+  // Animate
+  const startRot = rotation;
+  const endRot = startRot + totalRotation;
+  const duration = 3000 + Math.random()*1000;
+  const startTime = performance.now();
+
+  function animate(time){
+    const elapsed = time - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease out cubic
+    const eased = 1 - Math.pow(1-progress, 3);
+    const currentRot = startRot + (endRot - startRot) * eased;
+    rotation = currentRot;
+    drawWheel(currentRot);
+
+    if(progress < 1){
+      requestAnimationFrame(animate);
+    }else{
+      spinning = false;
+      btn.disabled = false;
+      btn.textContent = '🎡 再转一次';
+
+      const result = SEGMENTS[targetSeg];
+      document.getElementById('result').innerHTML = `
+        <div class="r-icon">${result.emoji}</div>
+        <div class="r-text">${result.label}</div>
+        <div class="r-desc">${getDesc(targetSeg)}</div>`;
+
+      // Add to history
+      const time = new Date().toLocaleTimeString();
+      history.unshift({time,result:result.label});
+      const hist = document.getElementById('history');
+      hist.innerHTML = '<div class="h-item"><span>时间</span><span>结果</span></div>' +
+        history.slice(0,10).map(h =>
+          `<div class="h-item"><span>${h.time}</span><span>${h.result}</span></div>`
+        ).join('');
+
+      // Telegram haptic
+      try{tg?.HapticFeedback?.impactOccurred('medium')}catch(e){}
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+function getDesc(i){
+  const descs = [
+    '🎊 今天运气爆棚！',
+    '💵 小赚一笔，开心一下',
+    '🔄 命运说：再来一次',
+    '😭 接受惩罚吧！',
+    '🎁 看看有什么惊喜',
+    '👻 搞个恶作剧吧',
+    '😴 该休息了～',
+    '✨ 好运正在路上',
+  ];
+  return descs[i] || '命运如此安排';
+}
+</script>
+</body>
+</html>
