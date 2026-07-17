@@ -9,7 +9,7 @@ module.exports = {
     const lang = (ctx.from?.language_code||'').startsWith('zh')?'zh':'en';
     const msg = lang==='zh'?'🧠 *记忆挑战*\n\n我会显示一串数字，记住它然后按顺序输入！\n每轮增加一位数，看你能记住几位！':'🧠 *Memory Challenge*\n\nI will show a sequence of numbers. Remember it and type them back!\nEach round adds one more digit. How many can you remember?';
     const id=v4().slice(0,6);
-    const seq=Array.from({length:4},()=>Math.floor(Math.random()*10)).join('');
+    const seq=Array.from({length:5},()=>Math.floor(Math.random()*10)).join('');
     games.set(id,{id,seq,round:1,lang});
     await ctx.reply(msg,{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'🧠 '+ (lang==='zh'?'开始':'Start'),callback_data:`game_memory_show_${id}`}]]}});
   },
@@ -28,7 +28,7 @@ module.exports = {
           g.lang==='zh'?`🧠 *输入你记住的数字*\n\n共 ${g.seq.length} 位`:`🧠 *Type the number*\n\n${g.seq.length} digits`,
           {parse_mode:'Markdown',reply_markup:{inline_keyboard:[btns,btns2,[{text:'✅ '+(g.lang==='zh'?'确认':'Submit'),callback_data:`game_memory_check_${id}`}]]}}
         );}catch(e){}
-      },3000);
+      },2000);
       return ctx.answerCbQuery();
     }
     if(action.startsWith('digit_')){
@@ -41,8 +41,8 @@ module.exports = {
       const id=action.split('_')[1];const g=games.get(id);if(!g)return ctx.answerCbQuery('❌');
       const correct=g.answer===g.seq;
       if(correct){
-        if(g.round>=8){
-          await ctx.editMessageText(result.win(g.lang,{winner:ctx.from.username||'Player',game:'🧠 '+(g.lang==='zh'?'记忆挑战':'Memory'),score:g.round+'/8',isRecord:true,stats:{[g.lang==='zh'?'最高轮次':'Best Round']:g.round}}),{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'🧠 '+(g.lang==='zh'?'再来一局':'Play Again'),callback_data:'game_memory_new'}]]}});
+        if(g.round>=7){
+          await ctx.editMessageText(result.win(g.lang,{winner:ctx.from.username||'Player',game:'🧠 '+(g.lang==='zh'?'记忆挑战':'Memory'),score:g.round+'/7',isRecord:true,stats:{[g.lang==='zh'?'最高轮次':'Best Round']:g.round}}),{parse_mode:'Markdown',reply_markup:{inline_keyboard:[[{text:'🧠 '+(g.lang==='zh'?'再来一局':'Play Again'),callback_data:'game_memory_new'}]]}});
           games.delete(id);
         }else{
           g.round++;g.seq+=Math.floor(Math.random()*10);g.answer='';

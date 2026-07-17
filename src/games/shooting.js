@@ -7,7 +7,7 @@ module.exports = {
   id: 'shooting', name: '🎯 射击靶场',
   async startPlay(ctx) {
     const lang = (ctx.from?.language_code||'').startsWith('zh')?'zh':'en';
-    const msg = lang === 'zh' ? '🎯 *射击靶场*\n\n你有 5 发子弹，瞄准靶心射击！\n靶心分数：10环=10分，越往外越低。\n\n点击射击！' : '🎯 *Shooting Range*\n\nYou have 5 bullets. Shoot the target!\nBullseye = 10 points, decreasing outward.\n\nFire!';
+    const msg = lang === 'zh' ? '🎯 *射击靶场*\n\n你有 3 发子弹，瞄准靶心射击！\n靶心分数：10环=10分，越往外越低。\n\n点击射击！' : '🎯 *Shooting Range*\n\nYou have 3 bullets. Shoot the target!\nBullseye = 10 points, decreasing outward.\n\nFire!';
     const id = v4().slice(0,6);
     games.set(id, { id, shots: 0, score: 0, lang });
     await ctx.reply(msg, { parse_mode: 'Markdown',
@@ -28,16 +28,16 @@ module.exports = {
       else if (accuracy > 0.15) { points = 2; msg = g.lang==='zh'?'🎯 2环，偏了':'🎯 2 rings, off target'; }
       else { points = 0; msg = g.lang==='zh'?'💨 脱靶！':'💨 Missed!'; }
       g.score += points;
-      if (g.shots >= 5) {
-        const isRecord = g.score >= 40;
-        const winMsg = result.win(g.lang, { winner: ctx.from.username||'Player', game: '🎯 '+(g.lang==='zh'?'射击靶场':'Shooting Range'), score: g.score+'/50', isRecord, stats: { [g.lang==='zh'?'命中率':'Accuracy']: Math.round(g.score/50*100)+'%', [g.lang==='zh'?'总环数':'Total']: g.score+'/50' } });
+      if (g.shots >= 3) {
+        const isRecord = g.score >= 24;
+        const winMsg = result.win(g.lang, { winner: ctx.from.username||'Player', game: '🎯 '+(g.lang==='zh'?'射击靶场':'Shooting Range'), score: g.score+'/30', isRecord, stats: { [g.lang==='zh'?'命中率':'Accuracy']: Math.round(g.score/50*100)+'%', [g.lang==='zh'?'总环数':'Total']: g.score+'/50' } });
         await ctx.editMessageText(winMsg, { parse_mode: 'Markdown',
           reply_markup: { inline_keyboard: [[{ text: '🎯 ' + (g.lang==='zh'?'再来一局':'Play Again'), callback_data: 'game_shooting_new' }]] }
         });
         games.delete(id);
       } else {
         await ctx.editMessageText(
-          (g.lang==='zh'?`🎯 第 ${g.shots}/5 枪\n${msg}\n当前得分：${g.score}/50\n\n继续射击！`:`🎯 Shot ${g.shots}/5\n${msg}\nScore: ${g.score}/50\n\nKeep shooting!`),
+          (g.lang==='zh'?`🎯 第 ${g.shots}/3 枪\n${msg}\n当前得分：${g.score}/30\n\n继续射击！`:`🎯 Shot ${g.shots}/3\n${msg}\nScore: ${g.score}/50\n\nKeep shooting!`),
           { reply_markup: { inline_keyboard: [[{ text: '🎯 ' + (g.lang==='zh'?'继续射击':'Shoot'), callback_data: `game_shooting_shoot_${id}` }]] } }
         );
       }

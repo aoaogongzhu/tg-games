@@ -6,9 +6,9 @@ module.exports = {
   id: 'guess', name: '🔢 猜数字',
   async startPlay(ctx) { // Actually, we need lang from context
     const lang = (ctx.from?.language_code||'').startsWith('zh')?'zh':'en';
-    const msg = lang==='zh' ? '🔢 *猜数字*\n\n我心里想了一个 1-100 之间的数字，你猜是几？\n每次我都会告诉你「大了」或「小了」！' : '🔢 *Guess Number*\n\nI am thinking of a number between 1-100. Can you guess it?\nI will tell you "higher" or "lower" each time!';
+    const msg = lang==='zh' ? '🔢 *猜数字*\n\n我心里想了一个 1-200 之间的数字，你猜是几？\n每次我都会告诉你「大了」或「小了」！' : '🔢 *Guess Number*\n\nI am thinking of a number between 1-200. Can you guess it?\nI will tell you "higher" or "lower" each time!';
     const id = uuidv4().slice(0,6);
-    games.set(id,{num:Math.floor(Math.random()*100)+1,attempts:0,id,lang});
+    games.set(id,{num:Math.floor(Math.random()*200)+1,attempts:0,id,lang});
     await ctx.reply(msg,{parse_mode:'Markdown',
       reply_markup:{inline_keyboard:[
         ['1-20','21-40','41-60'].map(n=>({text:n,callback_data:`game_guess_range_${id}_${n.split('-')[0]}_${n.split('-')[1]}`})),

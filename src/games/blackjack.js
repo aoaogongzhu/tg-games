@@ -71,7 +71,7 @@ module.exports = {
 
       if(!isHit||handSum(g.player)===21){
         // Dealer plays
-        while(handSum(g.dealer)<17)g.dealer.push(draw());
+        while(handSum(g.dealer)<18)g.dealer.push(draw());
         const ps = handSum(g.player), ds = handSum(g.dealer);
         let result = '';
         if(ds>21)result = lang==='zh'?'🎉 庄家爆牌，你赢了！':'🎉 Dealer busts, you win!';

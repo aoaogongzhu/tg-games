@@ -135,7 +135,7 @@ async function resolveRound(ctx, game) {
   game.round++;
   const s1 = game.scores[p1.id], s2 = game.scores[p2.id];
   msg += '\n\n' + i18n.t(useLang,'rps.score').replace('{p1}',p1.username).replace('{s1}',s1).replace('{p2}',p2.username).replace('{s2}',s2);
-  if (s1 >= 2 || s2 >= 2) {
+  if (s1 >= 3 || s2 >= 3) {
     game.status = 'finished';
     const w = s1 >= 2 ? p1 : p2;
     msg += '\n\n' + i18n.t(useLang,'rps.match_win').replace('{winner}',w.username);

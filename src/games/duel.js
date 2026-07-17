@@ -151,13 +151,13 @@ module.exports = {
     const p1 = game.players[game.order[0]], p2 = game.players[game.order[1]];
     const a1 = p1.action, a2 = p2.action;
     let logKey = '', dmg1 = 0, dmg2 = 0, heal1 = 0, heal2 = 0;
-    if (a1 === 'attack' && a2 === 'attack') { dmg1 = 3; dmg2 = 3; logKey = 'log_attack_attack'; }
-    else if (a1 === 'attack' && a2 === 'defend') { dmg2 = 1; logKey = 'log_attack_defend'; }
-    else if (a1 === 'attack' && a2 === 'heal') { dmg2 = 3; logKey = 'log_attack_heal'; }
-    else if (a1 === 'defend' && a2 === 'attack') { dmg1 = 1; logKey = 'log_attack_defend'; }
+    if (a1 === 'attack' && a2 === 'attack') { const c1=Math.random()<0.1,c2=Math.random()<0.1; dmg1=c1?5:3; dmg2=c2?5:3; logKey=c1||c2?'log_crit':'log_attack_attack'; }
+    else if (a1 === 'attack' && a2 === 'defend') { const c1=Math.random()<0.1; dmg2=c1?2:1; logKey=c1?'log_crit_def':'log_attack_defend'; }
+    else if (a1 === 'attack' && a2 === 'heal') { const c=Math.random()<0.1; dmg2=c?5:3; logKey=c?'log_crit':'log_attack_heal'; }
+    else if (a1 === 'defend' && a2 === 'attack') { const c=Math.random()<0.1; dmg1=c?2:1; logKey=c?'log_crit_def':'log_attack_defend'; }
     else if (a1 === 'defend' && a2 === 'defend') { logKey = 'log_defend_defend'; }
     else if (a1 === 'defend' && a2 === 'heal') { heal2 = 2; logKey = 'log_defend_heal'; }
-    else if (a1 === 'heal' && a2 === 'attack') { dmg1 = 3; logKey = 'log_attack_heal'; }
+    else if (a1 === 'heal' && a2 === 'attack') { const c=Math.random()<0.1; dmg1=c?5:3; logKey=c?'log_crit':'log_attack_heal'; }
     else if (a1 === 'heal' && a2 === 'defend') { heal1 = 2; logKey = 'log_defend_heal'; }
     else if (a1 === 'heal' && a2 === 'heal') { heal1 = 2; heal2 = 2; logKey = 'log_heal_heal'; }
     if (dmg1) p1.hp = Math.max(0, p1.hp - dmg1);
