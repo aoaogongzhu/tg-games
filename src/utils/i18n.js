@@ -21,7 +21,8 @@ const strings = {
       games: [
         { id: 'truth', name: '💬 真心话大冒险', desc: '经典的派对游戏', mode: '👥 多人' },
         { id: 'king', name: '👑 国王游戏', desc: '国王的命令必须服从', mode: '👥 多人' },
-        { id: 'wheel', name: '🎡 命运转盘', desc: '转出你的命运', mode: '👤 单人' }
+        { id: 'wheel', name: '🎡 命运转盘', desc: '转出你的命运', mode: '👤 单人' },
+        { id: 'western', name: '?? ????', desc: '?????????', mode: '?? ??' }
       ]
     },
     puzzle: {
@@ -29,7 +30,9 @@ const strings = {
       desc: '动动脑筋，挑战你的智商！',
       games: [
         { id: 'guess', name: '🔢 猜数字', desc: '猜中我心中的数字', mode: '👤 单人' },
-        { id: 'riddle', name: '❓ 猜谜语', desc: '看看你能答对几个', mode: '👤 单人' }
+        { id: 'riddle', name: '❓ 猜谜语', desc: '看看你能答对几个', mode: '👤 单人' },
+        { id: 'memory', name: '?? ????', desc: '??????', mode: '?? ??' },
+        { id: 'quiz', name: '?? ????', desc: '5????', mode: '?? ??' }
       ]
     },
     card: {
@@ -37,7 +40,9 @@ const strings = {
       desc: '牌桌上的较量！',
       games: [
         { id: 'blackjack', name: '🃏 21点', desc: '挑战庄家，看谁更接近21', mode: '👤 单人' },
-        { id: 'rps', name: '🪨 猜拳王', desc: '三局两胜猜拳', mode: '👫 双人' }
+        { id: 'rps', name: '🪨 猜拳王', desc: '三局两胜猜拳', mode: '👫 双人' },
+        { id: 'cardwar', name: '?? ????', desc: '?????', mode: '?? ??' },
+        { id: 'slot', name: '?? ???', desc: '????', mode: '?? ??' }
       ]
     },
     shoot: {
@@ -45,14 +50,19 @@ const strings = {
       desc: '扣动扳机，决一胜负！',
       games: [
         { id: 'roulette', name: '💥 俄罗斯轮盘', desc: '6发1弹，敢赌吗', mode: '👥 多人' },
-        { id: 'duel', name: '⚔️ 决斗场', desc: '好友1v1回合制对战', mode: '👫 双人' }
+        { id: 'duel', name: '⚔️ 决斗场', desc: '好友1v1回合制对战', mode: '👫 双人' },
+        { id: 'shooting', name: '?? ????', desc: '5?????', mode: '?? ??' },
+        { id: 'reaction', name: '? ????', desc: '??????', mode: '?? ??' }
       ]
     },
     casual: {
       title: '🎲 休闲时光',
       desc: '放松一下，随手玩玩',
       games: [
-        { id: 'dice', name: '🎲 生死骰子', desc: '猜点数，一把定输赢', mode: '👤 单人' }
+        { id: 'dice', name: '🎲 生死骰子', desc: '猜点数，一把定输赢', mode: '👤 单人' },
+        { id: 'lucky', name: '?? ????', desc: '3?????', mode: '?? ??' },
+        { id: 'challenge', name: '?? ????', desc: '??????', mode: '?? ??' },
+        { id: 'diceduel', name: '?? ????', desc: '??????', mode: '?? ??' }
       ]
     },
     ad: {
@@ -91,7 +101,8 @@ const strings = {
       games: [
         { id: 'truth', name: '💬 Truth or Dare', desc: 'The classic party game', mode: '👥 Group' },
         { id: 'king', name: '👑 King Game', desc: 'The king commands!', mode: '👥 Group' },
-        { id: 'wheel', name: '🎡 Wheel of Fate', desc: 'Spin your destiny', mode: '👤 Solo' }
+        { id: 'wheel', name: '🎡 Wheel of Fate', desc: 'Spin your destiny', mode: '👤 Solo' },
+        { id: 'western', name: '?? Western Duel', desc: 'Quick draw showdown', mode: '?? 2P' }
       ]
     },
     puzzle: {
@@ -99,7 +110,9 @@ const strings = {
       desc: 'Challenge your brain!',
       games: [
         { id: 'guess', name: '🔢 Guess Number', desc: 'Guess the number', mode: '👤 Solo' },
-        { id: 'riddle', name: '❓ Riddles', desc: 'How many can you solve?', mode: '👤 Solo' }
+        { id: 'riddle', name: '❓ Riddles', desc: 'How many can you solve?', mode: '👤 Solo' },
+        { id: 'memory', name: '?? Memory Challenge', desc: 'Remember the sequence', mode: '?? Solo' },
+        { id: 'quiz', name: '?? Quiz', desc: '5 trivia questions', mode: '?? Solo' }
       ]
     },
     card: {
@@ -107,7 +120,9 @@ const strings = {
       desc: 'Battle at the table!',
       games: [
         { id: 'blackjack', name: '🃏 Blackjack', desc: 'Beat the dealer at 21', mode: '👤 Solo' },
-        { id: 'rps', name: '🪨 RPS King', desc: 'Best of 3 Rock Paper Scissors', mode: '👫 2P' }
+        { id: 'rps', name: '🪨 RPS King', desc: 'Best of 3 Rock Paper Scissors', mode: '👫 2P' },
+        { id: 'cardwar', name: '?? Card War', desc: 'Draw cards, higher wins', mode: '?? 2P' },
+        { id: 'slot', name: '?? Slot Machine', desc: 'Pull the lever!', mode: '?? Solo' }
       ]
     },
     shoot: {
@@ -115,14 +130,19 @@ const strings = {
       desc: 'Pull the trigger!',
       games: [
         { id: 'roulette', name: '💥 Russian Roulette', desc: '6 rounds, 1 bullet. Feel lucky?', mode: '👥 Group' },
-        { id: 'duel', name: '⚔️ Duel Arena', desc: '1v1 turn-based battle', mode: '👫 2P' }
+        { id: 'duel', name: '⚔️ Duel Arena', desc: '1v1 turn-based battle', mode: '👫 2P' },
+        { id: 'shooting', name: '?? Shooting Range', desc: '5 bullet target practice', mode: '?? Solo' },
+        { id: 'reaction', name: '? Reaction Test', desc: 'Test your reflexes', mode: '?? Solo' }
       ]
     },
     casual: {
       title: '🎲 Casual',
       desc: 'Relax and have fun',
       games: [
-        { id: 'dice', name: '🎲 Dice of Fate', desc: 'Predict the roll', mode: '👤 Solo' }
+        { id: 'dice', name: '🎲 Dice of Fate', desc: 'Predict the roll', mode: '👤 Solo' },
+        { id: 'lucky', name: '?? Lucky Draw', desc: '3 chances to win', mode: '?? Solo' },
+        { id: 'challenge', name: '?? Daily Challenge', desc: 'Random challenge', mode: '?? Solo' },
+        { id: 'diceduel', name: '?? Dice Duel', desc: 'Dice battle with friends', mode: '?? 2P' }
       ]
     },
     ad: {
