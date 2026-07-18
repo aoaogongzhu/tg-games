@@ -1,13 +1,15 @@
-﻿{
+{
   "name": "tg-duel-game",
   "version": "2.0.0",
-  "description": "🎮 Telegram 社交小游戏合集 - 部署至 Railway",
+  "description": "🎮 Telegram social mini games - 20 games in 5 categories",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js"
   },
-  "keywords": ["telegram", "bot", "mini-app", "game"],
-  "author": "",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["telegram", "bot", "mini-app", "games"],
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
