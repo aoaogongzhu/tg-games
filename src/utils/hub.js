@@ -62,7 +62,7 @@ async function routeCallback(ctx) {
     return ctx.answerCbQuery(next === 'zh' ? '🌐 已切换为中文' : '🌐 Switched to English');
   }
   if (data === 'hub_back') { await showMainMenu(ctx); return; }
-  if (data === 'hub_ad') { await ctx.reply(i18n.t(getLang(ctx), 'ad.msg'), { parse_mode: 'Markdown' }); return ctx.answerCbQuery(); }
+  if (data === 'hub_ad') { try { await ctx.reply(i18n.t(getLang(ctx), 'ad.msg'), { parse_mode: 'Markdown' }); } catch(e) { await ctx.reply(i18n.t(getLang(ctx), 'ad.msg')); } return ctx.answerCbQuery(); }
   if (data === 'hub_invite') {
     const lang2 = getLang(ctx);
     await ctx.reply(
@@ -73,7 +73,7 @@ async function routeCallback(ctx) {
     return ctx.answerCbQuery();
   }
 
-  if (data === 'hub_contact') { await ctx.reply(i18n.t(getLang(ctx), 'contact.msg'), { parse_mode: 'Markdown' }); return ctx.answerCbQuery(); }
+  if (data === 'hub_contact') { try { await ctx.reply(i18n.t(getLang(ctx), 'contact.msg'), { parse_mode: 'Markdown' }); } catch(e) { await ctx.reply(i18n.t(getLang(ctx), 'contact.msg')); } return ctx.answerCbQuery(); }
   if (data.startsWith('hub_cat_')) { return await showCategory(ctx, data.replace('hub_cat_', '')); }
   if (data.startsWith('hub_play_')) {
     const gameId = data.replace('hub_play_', ''); const mod = gameModules[gameId];
