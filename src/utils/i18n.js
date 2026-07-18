@@ -45,7 +45,16 @@ const strings = {
       desc: '经典派对游戏，和朋友一起嗨！',
       games: [
         { id: 'truth', name: '💬 真心话大冒险', desc: '和朋友一起玩火的游戏', mode: '👥 多人' },
-        { id: 'wheel', name: '🎡 命运转盘', desc: '转出你的命运', mode: '👤 单人' }
+        { id: 'wheel', name: '🎡 命运转盘', desc: '转出你的命运', mode: '👤 单人' },
+        { id: 'potato', name: '🔥 炸弹传递', desc: '定时炸弹传递游戏', mode: '👥 多人' }
+      ]
+    },
+    challenge: {
+      title: '🔥 竞技挑战',
+      desc: '烧脑选择题，命运骰子！',
+      games: [
+        { id: 'rather', name: '🤔 你选哪个', desc: '两难选择题', mode: '👥 多人' },
+        { id: 'truthdice', name: '🎲 真心话骰子', desc: '掷骰决定你的命运', mode: '👥 多人' }
       ]
     },
     ad: {
@@ -98,7 +107,16 @@ const strings = {
       desc: 'Classic party games with friends!',
       games: [
         { id: 'truth', name: '💬 Truth or Dare', desc: 'The classic party game', mode: '👥 Group' },
-        { id: 'wheel', name: '🎡 Wheel of Fate', desc: 'Spin your destiny', mode: '👤 Solo' }
+        { id: 'wheel', name: '🎡 Wheel of Fate', desc: 'Spin your destiny', mode: '👤 Solo' },
+        { id: 'potato', name: '🔥 Hot Potato', desc: 'Pass the bomb!', mode: '👥 Group' }
+      ]
+    },
+    challenge: {
+      title: '🔥 Challenge',
+      desc: 'Tough choices, fate dice!',
+      games: [
+        { id: 'rather', name: '🤔 Would You Rather', desc: 'Dilemma voting', mode: '👥 Group' },
+        { id: 'truthdice', name: '🎲 Truth Dice', desc: 'Roll your fate', mode: '👥 Group' }
       ]
     },
     ad: {
