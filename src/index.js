@@ -114,7 +114,34 @@ async function broadcastDuelTurn(state) {
 
 // ─── Start ────────────────────────────────────────────────────────
 
-app.listen(PORT, () => {
+
+// ??? Draw & Guess API ?????????????????????????????????????????????
+const DRAW_DIR = path.join(__dirname, "..", "public", "drawings");
+if (!fs.existsSync(DRAW_DIR)) fs.mkdirSync(DRAW_DIR, { recursive: true });
+
+app.post('/api/draw/submit', express.json(), (req, res) => {
+  const { gameId, playerId, image } = req.body;
+  if (!gameId || !image) return res.status(400).json({ success: false });
+  const filename = gameId + '.png';
+  const buffer = Buffer.from(image.split(',')[1], 'base64');
+  fs.writeFileSync(path.join(DRAW_DIR, filename), buffer);
+  // Try to send the image to the game chat
+  const g = drawGuessGame?.getGame?.(gameId);
+  if (g && g.chatId && bot) {
+    bot.telegram.sendPhoto(g.chatId, { source: buffer }, {
+      caption: (g.lang === 'zh' ? '?? ???????????\n\n??????????' : '?? Drawing ready! Guess what it is?\n\nTap a button to guess:'),
+      reply_markup: { inline_keyboard: g.guessOptions || [] }
+    }).catch(e => console.error('sendPhoto:', e.message));
+  }
+  res.json({ success: true });
+});
+
+app.get('/api/draw/image/:gameId', (req, res) => {
+  const filepath = path.join(DRAW_DIR, req.params.gameId + '.png');
+  if (fs.existsSync(filepath)) res.sendFile(filepath);
+  else res.status(404).json({ error: 'not found' });
+});
+\napp.listen(PORT, () => {
   console.log(`🌐 Server on port ${PORT}`);
   console.log(`🤖 Bot: @games_lite_bot`);
   console.log(`🎮 Mini App URL: ${APP_URL}`);

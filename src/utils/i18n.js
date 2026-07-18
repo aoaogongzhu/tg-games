@@ -1,4 +1,4 @@
-﻿// ─── i18n Module — 中文 / English (V2 with categories, ads, contact) ──
+// ─── i18n Module — 中文 / English (V2 with categories, ads, contact) ──
 const strings = {
   zh: {
     _name: '中文',
@@ -15,24 +15,19 @@ const strings = {
         { id: 'casual', icon: '🎲', name: '休闲时光', desc: '生死骰子' }
       ]
     },
-    social: {
-      title: '👥 社交派对',
-      desc: '和朋友们一起玩，笑到肚子疼！',
+    draw: {
+      title: '🎨 创意绘画',
+      desc: '拿起画笔，让朋友猜你画了什么！',
       games: [
-        { id: 'truth', name: '💬 真心话大冒险', desc: '经典的派对游戏', mode: '👥 多人' },
-        { id: 'king', name: '👑 国王游戏', desc: '国王的命令必须服从', mode: '👥 多人' },
-        { id: 'wheel', name: '🎡 命运转盘', desc: '转出你的命运', mode: '👤 单人' },
-        { id: 'western', name: '🔫 西部对决', desc: '快速拔枪，决一胜负', mode: '👫 双人' }
+        { id: 'drawguess', name: '🎨 你画我猜', desc: '画图让朋友猜，经典派对游戏', mode: '👥 多人' }
       ]
     },
-    puzzle: {
-      title: '🧩 益智解谜',
-      desc: '动动脑筋，挑战你的智商！',
+    spy: {
+      title: '🕵️ 推理社交',
+      desc: '谁是卧底？考验朋友间的默契！',
       games: [
-        { id: 'guess', name: '🔢 猜数字', desc: '猜中我心中的数字', mode: '👤 单人' },
-        { id: 'riddle', name: '❓ 猜谜语', desc: '看看你能答对几个', mode: '👤 单人' },
-        { id: 'memory', name: '🧠 记忆挑战', desc: '记住数字序列', mode: '👤 单人' },
-        { id: 'quiz', name: '🤔 知识问答', desc: '5道知识题', mode: '👤 单人' }
+        { id: 'spy', name: '🕵️ 谁是卧底', desc: '找出隐藏的卧底', mode: '👥 多人' },
+        { id: 'friendquiz', name: '🎯 默契考验', desc: '你有多了解你的朋友？', mode: '👥 多人' }
       ]
     },
     card: {
@@ -45,24 +40,12 @@ const strings = {
         { id: 'slot', name: '🎰 老虎机', desc: '拉杆中奖', mode: '👤 单人' }
       ]
     },
-    shoot: {
-      title: '🎯 射击竞技',
-      desc: '扣动扳机，决一胜负！',
+    party: {
+      title: '🎪 派对社交',
+      desc: '经典派对游戏，和朋友一起嗨！',
       games: [
-        { id: 'roulette', name: '💥 俄罗斯轮盘', desc: '6发1弹，敢赌吗', mode: '👥 多人' },
-        { id: 'duel', name: '⚔️ 决斗场', desc: '好友1v1回合制对战', mode: '👫 双人' },
-        { id: 'shooting', name: '🎯 射击靶场', desc: '5发子弹打靶', mode: '👤 单人' },
-        { id: 'reaction', name: '⚡ 反应速度', desc: '测试你的反应', mode: '👤 单人' }
-      ]
-    },
-    casual: {
-      title: '🎲 休闲时光',
-      desc: '放松一下，随手玩玩',
-      games: [
-        { id: 'dice', name: '🎲 生死骰子', desc: '猜点数，一把定输赢', mode: '👤 单人' },
-        { id: 'lucky', name: '🎪 幸运抽奖', desc: '3次抽奖机会', mode: '👤 单人' },
-        { id: 'challenge', name: '🏅 每日挑战', desc: '随机挑战任务', mode: '👤 单人' },
-        { id: 'diceduel', name: '🎲 双人骰子', desc: '和朋友比运气', mode: '👫 双人' }
+        { id: 'truth', name: '💬 真心话大冒险', desc: '和朋友一起玩火的游戏', mode: '👥 多人' },
+        { id: 'wheel', name: '🎡 命运转盘', desc: '转出你的命运', mode: '👤 单人' }
       ]
     },
     ad: {
@@ -95,54 +78,27 @@ const strings = {
         { id: 'casual', icon: '🎲', name: 'Casual', desc: 'Dice of Fate' }
       ]
     },
-    social: {
-      title: '👥 Party Games',
-      desc: 'Laugh out loud with friends!',
+    draw: {
+      title: '🎨 Drawing Games',
+      desc: 'Pick up the brush and let friends guess!',
+      games: [
+        { id: 'drawguess', name: '🎨 Draw & Guess', desc: 'Draw and let friends guess', mode: '👥 Group' }
+      ]
+    },
+    spy: {
+      title: '🕵️ Social Deduction',
+      desc: 'Find the spy, test your friendship!',
+      games: [
+        { id: 'spy', name: '🕵️ Who is the Spy', desc: 'Find the hidden spy', mode: '👥 Group' },
+        { id: 'friendquiz', name: '🎯 Friend Quiz', desc: 'How well do you know your friends?', mode: '👥 Group' }
+      ]
+    },
+    party: {
+      title: '🎪 Party Games',
+      desc: 'Classic party games with friends!',
       games: [
         { id: 'truth', name: '💬 Truth or Dare', desc: 'The classic party game', mode: '👥 Group' },
-        { id: 'king', name: '👑 King Game', desc: 'The king commands!', mode: '👥 Group' },
-        { id: 'wheel', name: '🎡 Wheel of Fate', desc: 'Spin your destiny', mode: '👤 Solo' },
-        { id: 'western', name: '🔫 Western Duel', desc: 'Quick draw showdown', mode: '👫 2P' }
-      ]
-    },
-    puzzle: {
-      title: '🧩 Puzzles',
-      desc: 'Challenge your brain!',
-      games: [
-        { id: 'guess', name: '🔢 Guess Number', desc: 'Guess the number', mode: '👤 Solo' },
-        { id: 'riddle', name: '❓ Riddles', desc: 'How many can you solve?', mode: '👤 Solo' },
-        { id: 'memory', name: '🧠 Memory Challenge', desc: 'Remember the sequence', mode: '👤 Solo' },
-        { id: 'quiz', name: '🤔 Quiz', desc: '5 trivia questions', mode: '👤 Solo' }
-      ]
-    },
-    card: {
-      title: '🃏 Card Games',
-      desc: 'Battle at the table!',
-      games: [
-        { id: 'blackjack', name: '🃏 Blackjack', desc: 'Beat the dealer at 21', mode: '👤 Solo' },
-        { id: 'rps', name: '🪨 RPS King', desc: 'Best of 3 Rock Paper Scissors', mode: '👫 2P' },
-        { id: 'cardwar', name: '🂴 Card War', desc: 'Draw cards, higher wins', mode: '👫 2P' },
-        { id: 'slot', name: '🎰 Slot Machine', desc: 'Pull the lever!', mode: '👤 Solo' }
-      ]
-    },
-    shoot: {
-      title: '🎯 Shooting',
-      desc: 'Pull the trigger!',
-      games: [
-        { id: 'roulette', name: '💥 Russian Roulette', desc: '6 rounds, 1 bullet. Feel lucky?', mode: '👥 Group' },
-        { id: 'duel', name: '⚔️ Duel Arena', desc: '1v1 turn-based battle', mode: '👫 2P' },
-        { id: 'shooting', name: '🎯 Shooting Range', desc: '5 bullet target practice', mode: '👤 Solo' },
-        { id: 'reaction', name: '⚡ Reaction Test', desc: 'Test your reflexes', mode: '👤 Solo' }
-      ]
-    },
-    casual: {
-      title: '🎲 Casual',
-      desc: 'Relax and have fun',
-      games: [
-        { id: 'dice', name: '🎲 Dice of Fate', desc: 'Predict the roll', mode: '👤 Solo' },
-        { id: 'lucky', name: '🎪 Lucky Draw', desc: '3 chances to win', mode: '👤 Solo' },
-        { id: 'challenge', name: '🏅 Daily Challenge', desc: 'Random challenge', mode: '👤 Solo' },
-        { id: 'diceduel', name: '🎲 Dice Duel', desc: 'Dice battle with friends', mode: '👫 2P' }
+        { id: 'wheel', name: '🎡 Wheel of Fate', desc: 'Spin your destiny', mode: '👤 Solo' }
       ]
     },
     ad: {
@@ -185,3 +141,4 @@ function setUserLang(userId, lang) { userPrefs.set(userId, lang); }
 const SEGMENT_COLORS = ['#e74c3c','#f39c12','#3498db','#9b59b6','#2ecc71','#e67e22','#1abc9c','#e94560'];
 
 module.exports = { strings, t, detectLang, getUserLang, setUserLang, SEGMENT_COLORS };
+
