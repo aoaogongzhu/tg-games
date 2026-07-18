@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { Telegraf } = require('telegraf');
@@ -141,7 +141,8 @@ app.get('/api/draw/image/:gameId', (req, res) => {
   if (fs.existsSync(filepath)) res.sendFile(filepath);
   else res.status(404).json({ error: 'not found' });
 });
-\napp.listen(PORT, () => {
+
+app.listen(PORT, () => {
   console.log(`🌐 Server on port ${PORT}`);
   console.log(`🤖 Bot: @games_lite_bot`);
   console.log(`🎮 Mini App URL: ${APP_URL}`);
