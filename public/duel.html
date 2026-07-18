@@ -9,25 +9,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .panel-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:14px}
 .panel-hp{font-weight:700;font-size:18px;color:#2ecc71}
 .hp-bg{width:100%;height:8px;background:#2a2a4a;border-radius:4px;overflow:hidden}
-.hp-fill{height:100%;border-radius:4px;transition:width .4s}
+.hp-fill{will-change:width;height:100%;border-radius:4px;transition:width .3s ease}
 .hp-fill.high{background:#2ecc71}.hp-fill.med{background:#f1c40f}.hp-fill.low{background:#e74c3c}
 .vs{font-size:20px;font-weight:800;color:#e94560;margin:2px 0;text-align:center}
 .actions{width:100%;max-width:360px;display:flex;gap:6px;margin:8px 0}
 .actions button{flex:1;padding:12px 4px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;color:#fff}
-.actions button:active{transform:scale(.93)}
+.actions button:active{transform:scale(.92);transition:transform .08s ease}
 .btn-atk{background:#c0392b}.btn-atk.selected{background:#e74c3c;box-shadow:0 0 0 2px #fff}
 .btn-def{background:#2980b9}.btn-def.selected{background:#3498db;box-shadow:0 0 0 2px #fff}
 .btn-heal{background:#27ae60}.btn-heal.selected{background:#2ecc71;box-shadow:0 0 0 2px #fff}
 .actions button:disabled{opacity:.35;cursor:not-allowed;transform:none}
-.submit{width:100%;max-width:360px;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;background:#e94560;color:#fff;margin-bottom:8px;transition:opacity .15s}
-.submit:disabled{opacity:.35;cursor:not-allowed}
+.submit{width:100%;max-width:360px;padding:13px;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;background:#e94560;color:#fff;margin-bottom:8px;transition:opacity .15s,transform .12s ease;will-change:transform}
+.submit:disabled{opacity:.35;cursor:not-allowed;transform:none}
 .status{width:100%;max-width:360px;background:#1a1a30;border-radius:8px;padding:10px 14px;text-align:center;font-size:14px;min-height:40px;display:flex;align-items:center;justify-content:center;margin-bottom:6px}
 .waiting{color:#f1c40f}.result{color:#2ecc71}
 .turn-info{text-align:center;color:#667;font-size:12px;margin:2px 0}
 .loading{text-align:center;padding:50px 0;color:#667}
 .spinner{display:inline-block;width:28px;height:28px;border:3px solid #1a1a30;border-top-color:#e94560;border-radius:50%;animation:spin .7s linear infinite;margin-bottom:10px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.result-card{width:100%;max-width:360px;background:linear-gradient(135deg,#1a1a30,#0f0f1a);border-radius:14px;padding:18px 16px;margin:6px 0;border:1px solid #333}
+@keyframes ci{from{opacity:0;transform:scale(.92) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}.result-card{animation:ci .35s ease-out;width:100%;max-width:360px;background:linear-gradient(135deg,#1a1a30,#0f0f1a);border-radius:14px;padding:18px 16px;margin:6px 0;border:1px solid #333}
 .result-card .r-header{text-align:center;margin-bottom:10px}
 .result-card .r-header .r-icon{font-size:36px}
 .result-card .r-header .r-title{font-size:20px;font-weight:800;margin-top:2px}

@@ -8,11 +8,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 h1{font-size:22px;margin:8px 0 4px;text-align:center}
 .sub{color:#667;font-size:13px;margin-bottom:12px}
 .wheel-wrap{position:relative;width:280px;height:280px;margin:8px auto}
-canvas#wheel{width:280px;height:280px;border-radius:50%;box-shadow:0 0 30px rgba(233,69,96,.3)}
+canvas#wheel{will-change:transform;width:280px;height:280px;border-radius:50%;box-shadow:0 0 30px rgba(233,69,96,.3)}
 .pointer{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:28px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));z-index:2}
 .btn-spin{width:260px;padding:16px;border:none;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#e94560,#c0392b);color:#fff;margin:14px 0 8px;transition:transform .15s}
 .btn-spin:active{transform:scale(.95)}.btn-spin:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.result-box{width:100%;max-width:360px;background:#1a1a30;border-radius:12px;padding:14px 16px;text-align:center;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.result-box{transition:all .3s ease;width:100%;max-width:360px;background:#1a1a30;border-radius:12px;padding:14px 16px;text-align:center;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .result-box .r-icon{font-size:36px;margin-bottom:4px}
 .result-box .r-text{font-size:18px;font-weight:600}
 .result-box .r-desc{font-size:13px;color:#889;margin-top:2px}
@@ -41,7 +41,7 @@ const _t = {
     desc:['🎊 Lucky day!','💵 Small treat','🔄 Try again','😭 Accept fate!','🎁 Surprise!','👻 Prank time','😴 Time to rest','✨ Good luck coming']}
 };
 const SEGS = _t[LANG].seg, DESCS = _t[LANG].desc, N = SEGS.length;
-const canvas=document.getElementById('wheel'),ctx=canvas.getContext('2d');
+const cvs=document.getElementById('wheel'),dpr=window.devicePixelRatio||1;cvs.width=280*dpr;cvs.height=280*dpr;cvs.style.width='280px';cvs.style.height='280px';const ctx=cvs.getContext('2d');ctx.scale(dpr,dpr);
 let rotation=0, spinning=false, history=[];
 
 document.getElementById('title').textContent=_t[LANG].title;
@@ -77,7 +77,7 @@ function sp(){
     rotation=sr+(er-sr)*eas;drawW(rotation);
     if(p<1)requestAnimationFrame(ani);else{
       spinning=false;btn.disabled=false;btn.textContent=_t[LANG].aga;
-      const s=SEGS[ts];document.getElementById('result').innerHTML='<div class="r-icon">'+s.emoji+'</div><div class="r-text">'+s.label+'</div><div class="r-desc">'+DESCS[ts]+'</div>';
+      const s=SEGS[ts];document.getElementById('result').style.opacity='0';setTimeout(()=>{document.getElementById('result').innerHTML='<div class="r-icon">'+s.emoji+'</div><div class="r-text">'+s.label+'</div><div class="r-desc">'+DESCS[ts]+'</div>';document.getElementById('result').style.opacity='1';},50);
       const time=new Date().toLocaleTimeString();history.unshift({time,label:s.label});
       document.getElementById('history').innerHTML='<div class="h-item"><span>'+time+'</span><span>'+s.label+'</span></div>'+history.slice(0,10).map(h=>'<div class="h-item"><span>'+h.time+'</span><span>'+h.label+'</span></div>').join('');
       try{tg?.HapticFeedback?.impactOccurred('medium')}catch(e){}
