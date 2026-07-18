@@ -20,6 +20,7 @@ function mainMenuKeyboard(lang, uid) {
     kb.push(row);
   }
   kb.push([{ text: i18n.t(lang, 'ad.btn'), callback_data: 'hub_ad' }, { text: i18n.t(lang, 'contact.btn'), callback_data: 'hub_contact' }]);
+  kb.push([{ text: '📨 ' + (lang === 'zh' ? '邀请好友' : 'Invite Friends'), callback_data: 'hub_invite' }]);
   kb.push([{ text: (i18n.getUserLang(uid)||lang) === 'zh' ? '🌐 English' : '🌐 中文', callback_data: 'lang_switch' }]);
   return { inline_keyboard: kb };
 }
@@ -62,6 +63,16 @@ async function routeCallback(ctx) {
   }
   if (data === 'hub_back') { await showMainMenu(ctx); return; }
   if (data === 'hub_ad') { await ctx.reply(i18n.t(getLang(ctx), 'ad.msg'), { parse_mode: 'Markdown' }); return ctx.answerCbQuery(); }
+  if (data === 'hub_invite') {
+    const lang2 = getLang(ctx);
+    await ctx.reply(
+      (lang2 === 'zh'
+        ? '🎮 来和我一起玩游戏吧！\n\n@games_lite_bot 有 20 款社交小游戏！\n\n点击开始：https://t.me/games_lite_bot'
+        : '🎮 Come play games with me!\n\n@games_lite_bot has 20 social mini-games!\n\nStart here: https://t.me/games_lite_bot')
+    );
+    return ctx.answerCbQuery();
+  }
+
   if (data === 'hub_contact') { await ctx.reply(i18n.t(getLang(ctx), 'contact.msg'), { parse_mode: 'Markdown' }); return ctx.answerCbQuery(); }
   if (data.startsWith('hub_cat_')) { return await showCategory(ctx, data.replace('hub_cat_', '')); }
   if (data.startsWith('hub_play_')) {

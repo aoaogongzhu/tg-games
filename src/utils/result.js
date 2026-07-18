@@ -1,3 +1,9 @@
+function invite(lang) {
+  return lang === 'zh'
+    ? '\n\n🎮 来 @games_lite_bot 挑战我！'
+    : '\n\n🎮 Play at @games_lite_bot!';
+}
+
 ﻿// 🏆 Achievement Result Helper — 胜利成就感特效
 module.exports = {
   // Generate a dramatic win result message
@@ -32,6 +38,7 @@ module.exports = {
       Object.entries(stats).forEach(([k, v]) => { msg += `  • ${k}: **${v}**\n`; });
     }
     msg += '\n' + (['🔥','💪','🎉','✨','🌟','⭐'][Math.floor(Math.random()*6)]);
+    msg += invite(lang);
     return msg;
   },
 
@@ -50,6 +57,7 @@ module.exports = {
     if (stats) {
       Object.entries(stats).forEach(([k, v]) => { msg += `  • ${k}: **${v}**\n`; });
     }
+    msg += invite(lang);
     return msg;
   },
 
@@ -62,6 +70,6 @@ module.exports = {
       title: '🤝 Well Matched',
       msg: 'A tie! Play another round to decide!'
     };
-    return `🤝 **${t.title}** 🤝\n\n${players ? players.join(' VS ') + '\n' : ''}${t.msg}`;
+    return `🤝 **${t.title}** 🤝\n\n${players ? players.join(' VS ') + '\n' : ''}${t.msg}${invite(lang)}`;
   }
 };
