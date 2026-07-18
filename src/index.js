@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const { Telegraf } = require('telegraf');
 const hub = require('./utils/hub');
-const duelGame = require('./games/duel');
+let duelGame; try { duelGame = require('./games/duel'); } catch(e) { duelGame = null; }
 const i18n = require('./utils/i18n');
 
 if (!process.env.APP_URL && process.env.RAILWAY_PUBLIC_DOMAIN) {
