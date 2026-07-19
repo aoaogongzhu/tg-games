@@ -4,7 +4,7 @@ const GAMES = [
   { id: "spy", name: "\uD83D\uDD75\uFE0F \u8C01\u662F\u5367\u5E95", desc: "\u627E\u51FA\u9690\u85CF\u7684\u5367\u5E95" },
   { id: "friendquiz", name: "\uD83C\uDFAF \u9ED8\u5951\u8003\u9A8C", desc: "\u4F60\u6709\u591A\u4E86\u89E3\u670B\u53CB" },
   { id: "truth", name: "\uD83D\uDCAC \u771F\u5FC3\u8BDD\u5927\u5192\u9669", desc: "\u7ECF\u5178\u6D3E\u5BF9\u6E38\u620F" },
-  { id: "wheel", name: "\uD83C\uDFA1 \u547D\u8FD0\u8F6C\u76D8", desc: "\u8F6C\u51FA\u4F60\u7684\u547D\u8FD0" },
+  { id: "rather", name: "\uD83E\uDD14 \u4F60\u9009\u54EA\u4E2A", desc: "\u4E24\u96BE\u9009\u62E9\u9898" },
   { id: "potato", name: "\uD83D\uDD25 \u70B8\u5F39\u4F20\u9012", desc: "\u5B9A\u65F6\u70B8\u5F39\u6E38\u620F" },
 ];
 const gameModules = {};
