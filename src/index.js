@@ -113,6 +113,21 @@ async function broadcastDuelTurn(state) {
   } catch (e) {}
 }
 
+
+
+// ─── Diagnostic ──────────────────────────────────────────────────
+bot.command('status', (ctx) => {
+  const hub = require('./utils/hub');
+  const ALL = ['drawguess','spy','friendquiz','truth','wheel','potato','rather','truthdice'];
+  let msg = '🎮 *Game Status*\\n\\n';
+  ALL.forEach(id => {
+    try { const m = require('./games/'+id); msg += '✅ '+id+' = '+m.name+'\\n'; }
+    catch(e) { msg += '❌ '+id+': '+e.message.split('\\n')[0]+'\\n'; }
+  });
+  msg += '\\n📊 Total: '+ALL.length+' games';
+  ctx.reply(msg, { parse_mode: 'Markdown' });
+});
+
 // ─── Start ────────────────────────────────────────────────────────
 
 
