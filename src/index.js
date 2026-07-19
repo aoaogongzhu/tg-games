@@ -27,11 +27,11 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // ─── Bot ──────────────────────────────────────────────────────────
 
-bot.start((ctx) => hub.showMainMenu(ctx));
+bot.start((ctx) => hub.showMain(ctx));
 
 bot.on('callback_query', async (ctx) => {
   try {
-    const handled = await hub.routeCallback(ctx);
+    const handled = await hub.routeCB(ctx);
     if (handled === false) await ctx.answerCbQuery('❓');
   } catch (e) {
     console.error('Callback error:', e.message);

@@ -16,7 +16,7 @@ module.exports = {
       : "🎨 *Draw & Guess*\n\nOne person draws, others guess!\n\nTap to join, need at least 2 to start!";
     const id = v4().slice(0,6);
     games.set(id, { id, chatId: ctx.chat.id, players: [{ id: ctx.from.id, username: ctx.from.username || "Player" }], status: "waiting", lang, round: 0, scores: {} });
-    await ctx.reply(msg, { parse_mode: "Markdown", reply_markup: { inline_keyboard: [
+    await ctx.reply(msg, { reply_markup: { inline_keyboard: [
       [{ text: "🎨 " + (lang==="zh"?"加入游戏":"Join"), callback_data: `game_drawguess_join_${id}` }],
       [{ text: "🎯 " + (lang==="zh"?"开始游戏":"Start"), callback_data: `game_drawguess_start_${id}` }],
       [{ text: "❌", callback_data: `game_drawguess_cancel_${id}` }]
@@ -120,14 +120,14 @@ async function startRound(ctx, g) {
   try {
     await ctx.telegram.sendMessage(drawer.id,
       (g.lang==="zh"?`🎨 轮到你了！画这个词：**${word}**\\n\\n点击下方按钮打开画板，画完提交！⏱ 60秒`:`🎨 Your turn! Draw: **${word}**\\n\\nOpen the canvas below and draw! ⏱ 60s`),
-      { parse_mode: "Markdown", reply_markup: { inline_keyboard: [[{ text: "🎨 "+(g.lang==="zh"?"打开画板":"Open Canvas"), web_app: { url: drawUrl } }]] } }
+      { reply_markup: { inline_keyboard: [[{ text: "🎨 "+(g.lang==="zh"?"打开画板":"Open Canvas"), web_app: { url: drawUrl } }]] } }
     );
   } catch(e) {}
 
   // Announce to group
   await ctx.telegram.sendMessage(g.chatId,
     (g.lang==="zh"?`🎨 **${drawer.username}** 正在画画...\\n\\n猜对了 +10 分，画画的人 +5 分！\\n\\n画作提交后会显示在这里，届时点击下方按钮猜答案！`:`🎨 **${drawer.username}** is drawing...\\n\\nGuess correct = +10 pts, Drawer gets +5 pts!\\n\\nWhen the drawing is ready, guess below!`),
-    { parse_mode: "Markdown" }
+    { }
   );
 
   // Set timeout for drawing (60 seconds) - if no submission, auto-next
