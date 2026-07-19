@@ -24,6 +24,7 @@ async function showMain(ctx) {
     kb.push(row);
   }
   kb.push([{ text: "\uD83D\uDCE2 " + (lang==="zh"?"\u5E7F\u544A\u5408\u4F5C":"Advertise"), callback_data: "ad" }, { text: "\uD83D\uDCDE " + (lang==="zh"?"\u8054\u7CFB\u6211\u4EEC":"Contact"), callback_data: "contact" }]);
+  kb.push([{ text: "\uD83D\uDCE8 " + (lang==="zh"?"\u9080\u8BF7\u597D\u53CB":"Invite Friends"), callback_data: "invite" }]);
   kb.push([{ text: (lang==="zh"?"\uD83C\uDF10 English":"\uD83C\uDF10 \u4E2D\u6587"), callback_data: "lang" }]);
   try { await ctx.reply(text, { reply_markup: { inline_keyboard: kb } }); } catch(e) { console.error("showMain:", e.message); }
 }
@@ -35,6 +36,12 @@ async function routeCB(ctx) {
     if (cur === "zh") { ctx.from.language_code = "en"; } else { ctx.from.language_code = "zh"; }
     await showMain(ctx); return ctx.answerCbQuery();
   }
+  if (d === "invite") {
+    const msg = "\uD83C\uDFAE " + (getLang(ctx)==="zh"?"\u6765\u548C\u6211\u4E00\u8D77\u73A9\u6E38\u620F\u5427\uFF01\n\n@games_lite_bot":"Come play games with me!\n\n@games_lite_bot");
+    await ctx.reply(msg);
+    return ctx.answerCbQuery();
+  }
+
   if (d === "ad") { await ctx.reply("\uD83D\uDCE2 \u5E7F\u544A\u5408\u4F5C\n\n\u6B22\u8FCE\u54C1\u724C\u5408\u4F5C\uFF01\n\u8054\u7CFB: https://t.me/pincess_aoao"); return ctx.answerCbQuery(); }
   if (d === "contact") { await ctx.reply("\uD83D\uDCDE \u8054\u7CFB\u6211\u4EEC\n\nTelegram: https://t.me/pincess_aoao"); return ctx.answerCbQuery(); }
 
@@ -48,8 +55,8 @@ async function routeCB(ctx) {
   }
 
   for (const [id, mod] of Object.entries(gameModules)) {
-    if (d.startsWith(id + "_")) {
-      if (mod.handleCallback) return await mod.handleCallback(ctx, d.slice(id.length + 1));
+    if (d.startsWith("game_" + id + "_")) {
+      if (mod.handleCallback) return await mod.handleCallback(ctx, d.slice(("game_" + id + "_").length));
     }
   }
   return false;
