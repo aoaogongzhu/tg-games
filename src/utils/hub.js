@@ -4,7 +4,9 @@ const GAMES = [
   { id: "spy", name: "\uD83D\uDD75\uFE0F \u8C01\u662F\u5367\u5E95", desc: "\u627E\u51FA\u9690\u85CF\u7684\u5367\u5E95" },
   { id: "friendquiz", name: "\uD83C\uDFAF \u9ED8\u5951\u8003\u9A8C", desc: "\u4F60\u6709\u591A\u4E86\u89E3\u670B\u53CB" },
   { id: "truth", name: "\uD83D\uDCAC \u771F\u5FC3\u8BDD\u5927\u5192\u9669", desc: "\u7ECF\u5178\u6D3E\u5BF9\u6E38\u620F" },
-  { id: "wheel", name: "\uD83C\uDFA1 \u547D\u8FD0\u8F6C\u76D8", desc: "\u8F6C\u51FA\u4F60\u7684\u547D\u8FD0" },
+  { id: "slots", name: "\uD83C\uDFB0 \u8001\u864E\u673A", desc: "\u62C9\u6746\u4E2D\u5927\u5956" },
+  { id: "highlow", name: "\uD83C\uDFB2 \u731C\u5927\u5C0F", desc: "\u731C\u70B9\u6570\u8F93\u8D62" },
+  { id: "dragontiger", name: "\uD83C\uDCCF \u9F99\u864E\u6597", desc: "\u8D4C\u573A\u7ECF\u5178\u6BD4\u5927\u5C0F" },
   { id: "potato", name: "\uD83D\uDD25 \u70B8\u5F39\u4F20\u9012", desc: "\u5B9A\u65F6\u70B8\u5F39\u6E38\u620F" },
 ];
 const gameModules = {};
