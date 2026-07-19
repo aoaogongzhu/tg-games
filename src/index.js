@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+const fs = require('fs');
 const { Telegraf } = require('telegraf');
 const hub = require('./utils/hub');
 let duelGame; try { duelGame = require('./games/duel'); } catch(e) { duelGame = null; }
