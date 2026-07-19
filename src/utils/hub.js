@@ -7,6 +7,9 @@ const GAMES = [
   { id: "slots", name: "\uD83C\uDFB0 \u8001\u864E\u673A", desc: "\u62C9\u6746\u4E2D\u5927\u5956" },
   { id: "highlow", name: "\uD83C\uDFB2 \u731C\u5927\u5C0F", desc: "\u731C\u70B9\u6570\u8F93\u8D62" },
   { id: "dragontiger", name: "\uD83C\uDCCF \u9F99\u864E\u6597", desc: "\u8D4C\u573A\u7ECF\u5178\u6BD4\u5927\u5C0F" },
+  { id: "sicbo", name: "\uD83C\uDFB2 \u9AB0\u5B9D", desc: "\u4E09\u9AB0\u731C\u5927\u5C0F" },
+  { id: "bj", name: "\uD83C\uDCCF 21\u70B9", desc: "\u548C\u5E84\u5BB6\u6BD4\u70B9\u6570" },
+  { id: "roulette", name: "\uD83C\uDFAF \u8F6E\u76D8", desc: "\u731C\u7EA2\u9ED1\u5927\u5C0F" },
   { id: "potato", name: "\uD83D\uDD25 \u70B8\u5F39\u4F20\u9012", desc: "\u5B9A\u65F6\u70B8\u5F39\u6E38\u620F" },
 ];
 const gameModules = {};
