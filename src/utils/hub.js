@@ -1,4 +1,4 @@
-﻿// ─── Game Hub V4 — Social Games ──────────────────────────────────
+// ─── Game Hub V4 — Social Games ──────────────────────────────────
 const i18n = require("./i18n");
 
 const ALL_GAMES = ["drawguess","spy","friendquiz","truth","wheel","potato","rather","truthdice"];
